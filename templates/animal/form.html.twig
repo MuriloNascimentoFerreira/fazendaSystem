@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+
+ {% block stylesheets %}
+    <style>
+        .col-sm-2{
+            min-width: 200px;
+        }
+        .align-items-center{
+            max-width: 1026px;
+        }
+    </style>
+ {% endblock %}
+
+{% block body %}
+<h1>{{ titulo }}</h1>
+    <div class="card border-dark" style="width: fit-content">
+        <div class="card-body text-dark">
+            {{ form(form) }}
+        </div>
+    </div>
+
+{% endblock %}
