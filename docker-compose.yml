@@ -3,7 +3,7 @@ version: "3.7"
 services:
   ###> doctrine/doctrine-bundle ###
   db:
-    image: mysql
+    image: mysql:5.7
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: 123
