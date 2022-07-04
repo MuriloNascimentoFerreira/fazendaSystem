@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ titulo }}{% endblock %}
 
  {% block stylesheets %}
     <style>
@@ -16,8 +15,23 @@
 <h1>{{ titulo }}</h1>
     <div class="card border-dark" style="width: fit-content">
         <div class="card-body text-dark">
-            {{ form(form) }}
+       {{ form(form) }}
         </div>
     </div>
+    <script>
+
+        const elemento = document.getElementById('animal_nascimento')
+
+        elemento.flatpickr({
+            enableTime: false,
+            altInput: true,
+            dateFormat: "Y-m-d",
+            altFormat: "d/m/Y",
+            locale: "pt",
+            theme: "dark",
+            maxDate: new Date()
+        })
+
+    </script>
 
 {% endblock %}

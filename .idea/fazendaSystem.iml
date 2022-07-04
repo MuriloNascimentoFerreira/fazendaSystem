@@ -142,5 +142,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="pt" level="application" />
+    <orderEntry type="library" name="flatpickr" level="application" />
+    <orderEntry type="library" name="material_orange" level="application" />
+    <orderEntry type="library" name="dark" level="application" />
   </component>
 </module>

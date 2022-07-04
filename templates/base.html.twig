@@ -2,10 +2,30 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <title>{% block title %}Página Inicial{% endblock %}</title>
+        <link rel="icon" href=""> <!-- adicionar o icone do trator aqui -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        <style>
+            @media(max-width: 1100px) {
+                .text-responsive{
+                    white-space: normal;
+                }
+            }
+
+            .cor-font-nav > a{
+                color: white;
+            }
+
+        </style>
+
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -15,9 +35,47 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container mt-3">
+        <header>
+            <nav class="navbar col-12 position-fixed navbar-expand-lg bg-light " style="background-image: linear-gradient(to right, #EDD30C, #F06900); z-index: 999;">
+                <div class="container-fluid col-11 m-auto" style="background-image: linear-gradient(to right, #EDD30C, #F06900);">
+                    <a class="navbar-brand cor-font-nav" href="#" >Animais</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse " id="navbarNav">
+                        <ul class="navbar-nav" >
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Animais para abate</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Total Animais abatidos</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Relatórios semanais
+                                </a>
+                                <!-- / semanais (tirar "por semana") e colocar o "Animais abatidos para fora" -->
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="#">Quantidade de leite</a></li>
+                                    <li><a class="dropdown-item" href="#">Quantidade de Ração necessária</a></li>
+                                    <li><a class="dropdown-item" ref="#"><p class="text-responsive">Quantidade total de animais que tenham até 1 ano de
+                                                idade e que consumam mais de 500Kg</p></a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+        </header>
+
+        <div class="container" style="padding-top: 80px;">
             {% block body %}{% endblock %}
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     </body>
+
 </html>
