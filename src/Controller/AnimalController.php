@@ -58,10 +58,11 @@ class AnimalController extends AbstractController
             try{
                 $em->persist($animal);
                 $em->flush();
-            }catch (Exception $e){
-
+                $this->addFlash('success',"Animal inserido com sucesso!");
+            }catch (\Exception $e){
+                $this->addFlash('erro','Falha ao adicionar animal!');
             }
-            $animal = new Animal();
+            return $this->redirectToRoute("animal_adicionar");
         }
 
         $data['titulo'] = 'Adicionar Animal';
