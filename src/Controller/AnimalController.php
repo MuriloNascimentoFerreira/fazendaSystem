@@ -13,32 +13,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AnimalController extends AbstractController
 {
-    /**
-     * @Route("/index", name="app_animal")
-     */
-    public function index(EntityManagerInterface $orm): Response
+    public function listar(): array
     {
-        $animal = new Animal();
-        $animal->setLeite(5);
-        $animal->setRacao(5);
-        $animal->setPeso(5);
-        $data = new \DateTime();
-        $animal->setNascimento($data);
-        $animal->setSituacao(1);
+        //buscar todos os animais e retornar para a função adicionar
+        $animal1 = new Animal();
+        $animal1->setLeite(4);
+        $animal1->setPeso(4);
+        $animal1->setRacao(4);
+        $animal1->setSituacao(1);
+        $animal1->setNascimento(new \DateTime());
 
-        try{
-            $orm->persist($animal);
-            $orm->flush();
-        }catch (Exception $e){
+        $animal2 = new Animal();
+        $animal2->setLeite(11);
+        $animal2->setPeso(11);
+        $animal2->setRacao(11);
+        $animal2->setSituacao(1);
+        $animal2->setNascimento(new \DateTime());
 
-        }
+        $animais = [$animal1, $animal2];
 
-        return $this->render('animal/index.html.twig', [
-            'controller_name' => 'AnimalController',
-        ]);
+        return $animais;
     }
 
     /**
@@ -46,11 +44,16 @@ class AnimalController extends AbstractController
      */
     public function adicionar(Request $request,EntityManagerInterface $em) : Response
     {
+        $animais = $this->listar();
         $animal = new Animal();
         $Situacao = new Situacao();
 
-        $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
-        $form->handleRequest($request);
+        try{
+            $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
+            $form->handleRequest($request);
+        }catch (\Exception $e){
+            $this->addFlash('erro','Falha ao adicionar animal!');
+        }
 
         if($form->isSubmitted() && $form->isValid()){
             $animal->setSituacao($Situacao::getSituacao(Situacao::VIVO));
@@ -67,6 +70,7 @@ class AnimalController extends AbstractController
 
         $data['titulo'] = 'Adicionar Animal';
         $data['form'] = $form;
+        $data['animais'] = $animais;
 
         return $this->renderForm('animal/form.html.twig',$data);
     }
