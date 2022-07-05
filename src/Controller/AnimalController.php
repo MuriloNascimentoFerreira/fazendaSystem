@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Animal;
 use App\Enumeration\Situacao;
 use App\Form\AnimalType;
+use App\Repository\AnimalRepository;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,8 +18,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AnimalController extends AbstractController
 {
-    public function listar(): array
+    public function listar($entityManager): array
     {
+
+        $animaiss = $entityManager->getRepository(Animal::class)->findAll();
+
         //buscar todos os animais e retornar para a função adicionar
         $animal1 = new Animal();
         $animal1->setLeite(4);
@@ -36,7 +40,7 @@ class AnimalController extends AbstractController
 
         $animais = [$animal1, $animal2];
 
-        return $animais;
+        return $animaiss;
     }
 
     /**
@@ -44,7 +48,7 @@ class AnimalController extends AbstractController
      */
     public function adicionar(Request $request,EntityManagerInterface $em) : Response
     {
-        $animais = $this->listar();
+        $animais = $this->listar($em);
         $animal = new Animal();
         $Situacao = new Situacao();
 

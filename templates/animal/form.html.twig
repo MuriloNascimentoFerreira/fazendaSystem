@@ -60,7 +60,6 @@
             })
         }
 
-
         document.querySelector("form").addEventListener("submit", event => {
             for (ele of fields) {
                 if ((!isNumeric(ele.value) || ele.value.length == 0) && ele.placeholder != "dd/mm/aaaa" ) {
