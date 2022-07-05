@@ -55,6 +55,9 @@
         {% endblock %}
     </head>
     <body>
+        <!-- incluir a pagina inicial-->
+        {#  include('homePage.html.twig') }}#}
+
         <header>
             <nav class="navbar col-12 position-fixed navbar-expand-lg bg-light " style="background-image: linear-gradient(to right, #EDD30C, #F06900); z-index: 999;">
                 <div class="container-fluid col-11 m-auto" style="background-image: linear-gradient(to right, #EDD30C, #F06900);">
@@ -72,47 +75,65 @@
                                 <a class="nav-link active destaque-button" onMouseOver="this.style.color='white'"
                                    onMouseOut="this.style.color='black'" aria-current="page" href="#">Historico de Animais abatidos</a>
                             </li>
-
-                                <!-- / semanais (tirar "por semana") e colocar o "Animais abatidos para fora" -->
-
+                            <!-- / semanais (tirar "por semana") e colocar o "Animais abatidos para fora" -->
                         </ul>
                     </div>
                 </div>
             </nav>
 
         </header>
+        {% block body %}{% endblock %}
 
-        <div class="container" style="padding-top: 77px">
-            <div class="row ">
-                <div class="card text-bg-info mb-3 ms-3" style="max-width: 24rem; ">
-                    <div class="card-header"><h6>Quantidade de leite produzido por semana</h6></div>
-                    <div class="card-body">
-                        <h5 class="card-title">500 L</h5>
-                    </div>
-                </div>
+        <script>
+            const elemento = document.getElementById('animal_nascimento')
+            elemento.flatpickr({
+                allowInput: true,
+                enableTime: false,
+                altInput: true,
+                dateFormat: "Y-m-d",
+                altFormat: "d/m/Y",
+                locale: "pt",
+                theme: "dark",
+                maxDate: new Date()
+            })
 
-                <div class="card text-bg-primary mb-3 ms-3" style="max-width: 28rem;">
-                    <div class="card-header"><h6>Total de animais que tenham até 1 ano de
-                            idade e que consumam mais de 500Kg de ração</h6></div>
-                    <div class="card-body">
-                        <h5 class="card-title">103 animais</h5>
-                    </div>
-                </div>
+            const fields = document.querySelectorAll("[required]")
 
-                <div class="card text-bg-warning mb-3 ms-3" style="max-width: 24rem;">
-                    <div class="card-header"><h6>Quatidade de ração necessária por semana</h6></div>
-                    <div class="card-body">
-                        <h5 class="card-title">2000 kg</h5>
-                    </div>
-                </div>
+            function isNumeric(value) {
+                return /^\d+(?:\.\d+)?$/.test(value);
+            }
 
-            </div>
-        </div>
+            for(const field of fields){
+                field.addEventListener("change", function (event){
 
-        <div class="container mt-1">
-            {% block body %}{% endblock %}
-        </div>
+                    if(isNumeric(field.value) && field.value.length > 0){
+                        field.style = 'box-shadow: 0 0 0 0.2rem rgb(63, 237, 63, 0.404);'+ 'border-color: rgb(63, 237, 63, 0.695)'
+                        field.setAttribute('required','valid')
+                    }else {
+                        if(field.placeholder != "dd/mm/aaaa"){
+                            field.style = 'box-shadow: 0 0 0 0.2rem rgb(255, 0, 0, 0.404);' + 'border-color: red'
+                            field.setAttribute('valid', 'required')
+                        }
+                    }
 
+                })
+            }
+
+            document.querySelector("form").addEventListener("submit", event => {
+                for (ele of fields) {
+                    if ((!isNumeric(ele.value) || ele.value.length == 0) && ele.placeholder != "dd/mm/aaaa" ) {
+                        console.log(ele.value)
+                        console.log(ele.value.length)
+                        console.log(ele.placeholder != "dd/mm/aaaa" )
+                        console.log(isNumeric(ele.value))
+                        ele.focus()
+                        event.preventDefault()
+                        break;
+                    }
+                }
+            })
+
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     </body>
 

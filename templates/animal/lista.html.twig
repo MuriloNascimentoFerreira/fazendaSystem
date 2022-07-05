@@ -1,4 +1,4 @@
-{% block body %}
+{% block lista %}
     <h4 class="mt-3">Lista de Gados</h4>
     <div class="table-responsive">
         <table class="table">
@@ -22,7 +22,8 @@
                     <td>{{ animal.peso }}</td>
                     <td>{{ animal.nascimento|date("d/m/Y") }}</td>
                     <td>{{ animal.situacao }}</td>
-                    <td> <a class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
+                    <td> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
+
                 </tr>
             {% endfor %}
 
@@ -31,6 +32,5 @@
 
             </tfoot>
         </table>
-
     </div>
 {% endblock %}

@@ -1,26 +1,25 @@
-{% extends 'homePage.html.twig' %}
+{{ include('base.html.twig') }}
+
 {% block stylesheets %}
-<style>
-    .col-sm-2{
-        min-width: 200px;
-    }
-    .align-items-center{
-        max-width: 1026px;
-    }
-</style>
+    <style>
+        .col-sm-2{
+            min-width: 200px;
+        }
+        .align-items-center{
+            max-width: 1026px;
+        }
+    </style>
 {% endblock %}
 
-{% block formulario %}
-    <div class="container mt-1">
+{% block editar %}
+    <div class="container mt-xxl-5">
         <div class="card border-dark" style="width: fit-content">
-
             <div class="card-body text-dark">
                 <div class="card-title"><h2>{{ titulo }}</h2></div>
-                {{ form(form) }}
+                {{ form(formulario) }}
             </div>
             {{ include('includes/alerts.html.twig') }}
         </div>
-        {{ include('animal/lista.html.twig',animais) }}
     </div>
 
 {% endblock %}
