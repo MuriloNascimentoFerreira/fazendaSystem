@@ -12,21 +12,22 @@
  {% endblock %}
 
 {% block body %}
-<h1>{{ titulo }}</h1>
+
     <div class="card border-dark" style="width: fit-content">
+
         <div class="card-body text-dark">
+            <div class="card-title"><h2>{{ titulo }}</h2></div>
        {{ form(form) }}
         </div>
         {{ include('includes/alerts.html.twig') }}
     </div>
-
-
-
+        {{ include('animal/lista.html.twig',animais) }}
     <script>
 
         const elemento = document.getElementById('animal_nascimento')
 
         elemento.flatpickr({
+            allowInput: true,
             enableTime: false,
             altInput: true,
             dateFormat: "Y-m-d",
@@ -34,6 +35,44 @@
             locale: "pt",
             theme: "dark",
             maxDate: new Date()
+        })
+
+
+        const fields = document.querySelectorAll("[required]")
+
+        function isNumeric(value) {
+            return /^\d+(?:\.\d+)?$/.test(value);
+        }
+
+        for(const field of fields){
+            field.addEventListener("change", function (event){
+
+                if(isNumeric(field.value) && field.value.length > 0){
+                    field.style = 'box-shadow: 0 0 0 0.2rem rgb(63, 237, 63, 0.404);'+ 'border-color: rgb(63, 237, 63, 0.695)'
+                    field.setAttribute('required','valid')
+                }else {
+                    if(field.placeholder != "dd/mm/aaaa"){
+                        field.style = 'box-shadow: 0 0 0 0.2rem rgb(255, 0, 0, 0.404);' + 'border-color: red'
+                        field.setAttribute('valid', 'required')
+                    }
+                }
+
+            })
+        }
+
+
+        document.querySelector("form").addEventListener("submit", event => {
+            for (ele of fields) {
+                if ((!isNumeric(ele.value) || ele.value.length == 0) && ele.placeholder != "dd/mm/aaaa" ) {
+                    console.log(ele.value)
+                    console.log(ele.value.length)
+                    console.log(ele.placeholder != "dd/mm/aaaa" )
+                    console.log(isNumeric(ele.value))
+                    ele.focus()
+                    event.preventDefault()
+                    break;
+                }
+            }
         })
 
     </script>
