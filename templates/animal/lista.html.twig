@@ -22,7 +22,7 @@
                     <td>{{ animal.peso }}</td>
                     <td>{{ animal.nascimento|date("d/m/Y") }}</td>
                     <td>{{ animal.situacao }}</td>
-                    <td> <button class="btn btn-primary" href="#">Editar</button> </td>
+                    <td> <a class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
                 </tr>
             {% endfor %}
 
