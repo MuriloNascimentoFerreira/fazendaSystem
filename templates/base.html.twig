@@ -33,6 +33,17 @@
                 color: white;
             }
 
+            .destaque-button{
+                border: solid rgba(255, 255, 255, 0.53) 1px;
+                box-shadow: rgba(255, 255, 255, 0.53) 2px 2px 3px;
+                padding: 5px;
+                border-radius: 12px;
+            }
+            .destaque-button:hover{
+                box-shadow: rgba(61, 61, 61, 0.40) 1px 2px 5px;
+                color: white;
+                text-shadow: rgba(255, 255, 255, 0);
+            }
         </style>
 
         {% block stylesheets %}
@@ -47,31 +58,22 @@
         <header>
             <nav class="navbar col-12 position-fixed navbar-expand-lg bg-light " style="background-image: linear-gradient(to right, #EDD30C, #F06900); z-index: 999;">
                 <div class="container-fluid col-11 m-auto" style="background-image: linear-gradient(to right, #EDD30C, #F06900);">
-                    <a class="navbar-brand cor-font-nav" href="#" >Animais</a>
+                    <a class="navbar-brand cor-font-nav destaque-button" href="#" >Animais</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse " id="navbarNav">
                         <ul class="navbar-nav" >
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Animais para abate</a>
+                                <a class="nav-link active me-3 destaque-button" onMouseOver="this.style.color='white'"
+                                   onMouseOut="this.style.color='black'"  aria-current="page" href="#">Animais para abate</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Total Animais abatidos</a>
+                                <a class="nav-link active destaque-button" onMouseOver="this.style.color='white'"
+                                   onMouseOut="this.style.color='black'" aria-current="page" href="#">Historico de Animais abatidos</a>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Relatórios semanais
-                                </a>
                                 <!-- / semanais (tirar "por semana") e colocar o "Animais abatidos para fora" -->
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="#">Quantidade de leite</a></li>
-                                    <li><a class="dropdown-item" href="#">Quantidade de Ração necessária</a></li>
-                                    <li><a class="dropdown-item" href="#"><p class="text-responsive">Quantidade total de animais que tenham até 1 ano de
-                                                idade e que consumam mais de 500Kg</p></a></li>
-                                </ul>
-                            </li>
 
                         </ul>
                     </div>
@@ -80,7 +82,34 @@
 
         </header>
 
-        <div class="container" style="padding-top: 80px;">
+        <div class="container" style="padding-top: 77px">
+            <div class="row ">
+                <div class="card text-bg-info mb-3 ms-3" style="max-width: 24rem; ">
+                    <div class="card-header"><h6>Quantidade de leite produzido por semana</h6></div>
+                    <div class="card-body">
+                        <h5 class="card-title">500 L</h5>
+                    </div>
+                </div>
+
+                <div class="card text-bg-primary mb-3 ms-3" style="max-width: 28rem;">
+                    <div class="card-header"><h6>Total de animais que tenham até 1 ano de
+                            idade e que consumam mais de 500Kg de ração</h6></div>
+                    <div class="card-body">
+                        <h5 class="card-title">103 animais</h5>
+                    </div>
+                </div>
+
+                <div class="card text-bg-warning mb-3 ms-3" style="max-width: 24rem;">
+                    <div class="card-header"><h6>Quatidade de ração necessária por semana</h6></div>
+                    <div class="card-body">
+                        <h5 class="card-title">2000 kg</h5>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container mt-1">
             {% block body %}{% endblock %}
         </div>
 
