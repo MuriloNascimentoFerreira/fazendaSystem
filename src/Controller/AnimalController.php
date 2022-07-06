@@ -21,6 +21,7 @@ class AnimalController extends AbstractController
 
     public function index(): Response
     {
+
         return $this->render('homePage.html.twig');
     }
 
@@ -123,6 +124,51 @@ class AnimalController extends AbstractController
         return $this->redirectToRoute("animal_adicionar");
     }
 
+    /**
+     * @Route("/page_abate", name="animais_abate")
+     */
+    public function pageAbate(EntityManagerInterface $orm): Response
+    {
+        $animais = $orm->getRepository(Animal::class)->findAnimaisAbate();
 
+        $data['titulo'] = 'Lista de Gados para abate';
+        $data['animais'] = $animais;
+        return $this->render('animal/abate.html.twig', $data);
+    }
+
+    /**
+     * @Route("/page_abate/abater/{id}", name="animal_abater")
+     */
+    public function abater(int $id,EntityManagerInterface $orm): Response
+    {
+
+        try{
+            $animal = $orm->getRepository(Animal::class)->find($id);
+            $animal->setSituacao(Situacao::getSituacao("abatido"));
+            $orm->persist($animal);
+            $orm->flush();
+            $this->addFlash('successAbate',"Animal Abatido com sucesso!");
+
+        }catch (\Exception $e){
+            $this->addFlash('erroAbate','Falha ao abater o animal!');
+        }
+        return $this->redirectToRoute("animais_abate");
+    }
+
+    /**
+     * @Route("/abatidos", name="animais_abatidos")
+     */
+    public function relatorioAnimaisAbatidos(EntityManagerInterface $orm): Response
+    {
+        $animais = array();
+        try{
+            $animais = $orm->getRepository(Animal::class)->findAnimaisAbatidos();
+        }catch (\Exception $e){
+            $this->addFlash('erroAbate','Falha ao Acessar o banco de dados!');
+        }
+        $data['titulo'] = 'Lista de Gados Abatidos';
+        $data['animais'] = $animais;
+        return $this->render('animal/relatorios/abatidos.html.twig',$data);
+    }
 
 }

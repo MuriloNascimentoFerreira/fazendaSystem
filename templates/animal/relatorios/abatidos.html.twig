@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <div class="container" style="padding-top: 77px">
+        {{ include('includes/alertsAbate.hmtl.twig') }}
+        <h4>{{ titulo }}</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="row">#</th>
+                        <th scope="col">Leite por semana(L)</th>
+                        <th scope="col">Ração por semana(Kg)</th>
+                        <th scope="col">Peso(Kg)</th>
+                        <th scope="col">Data de Nascimento</th>
+                        <th scope="col">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for animal in animais %}
+                    <tr>
+                        <td>{{ animal.id }}</td>
+                        <td>{{ animal.leite }}</td>
+                        <td>{{ animal.racao }}</td>
+                        <td>{{ animal.peso }}</td>
+                        <td>{{ animal.nascimento|date("d/m/Y") }}</td>
+                        <td>{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}
