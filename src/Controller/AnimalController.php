@@ -26,27 +26,8 @@ class AnimalController extends AbstractController
 
     public function listar($entityManager): array
     {
-
-        $animaiss = $entityManager->getRepository(Animal::class)->findAll();
-
-        //buscar todos os animais e retornar para a função adicionar
-        $animal1 = new Animal();
-        $animal1->setLeite(4);
-        $animal1->setPeso(4);
-        $animal1->setRacao(4);
-        $animal1->setSituacao(1);
-        $animal1->setNascimento(new \DateTime());
-
-        $animal2 = new Animal();
-        $animal2->setLeite(11);
-        $animal2->setPeso(11);
-        $animal2->setRacao(11);
-        $animal2->setSituacao(1);
-        $animal2->setNascimento(new \DateTime());
-
-        $animais = [$animal1, $animal2];
-
-        return $animaiss;
+        $animais = $entityManager->getRepository(Animal::class)->findAll();
+        return $animais;
     }
 
     /**
