@@ -49,22 +49,35 @@ class AnimalRepository extends ServiceEntityRepository
         return $id[0];
     }
 
-//    /**
-//     * @return Animal[] Returns an array of Animal objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findAnimaisAbate(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orWhere('a.leite < :leite') //40
+            ->orWhere('a.leite < :leite and a.racao > :racao') // leite=70 racao= 350 ()
+            ->andWhere('a.situacao = :situacao') //situacao = 1
+            ->orWhere('a.peso > :peso') //peso = 270 kilo
+            ->setParameter('leite', 40)
+            ->setParameters(['leite'=> 70, 'racao'=> 350])
+            ->setParameter('situacao', 1)
+            ->setParameter('peso', 270)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
-//    public function findOneBySomeField($value): ?Animal
+    public function findAnimaisAbatidos(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.situacao = :situacao') //situacao = 2
+            ->setParameter('situacao', 2)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+//    public function findDemanadaRacao(): ?Animal
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')
