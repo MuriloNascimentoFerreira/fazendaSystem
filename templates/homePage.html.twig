@@ -1,27 +1,27 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}{% endblock %}
 {% block body %}
-        <div class="container" style="padding-top: 77px">
-            <div class="row ">
-                <div class="card text-bg-info mb-3 ms-3" style="max-width: 24rem; ">
+        <div class="container-fluid" style="padding-top: 77px">
+            <div class="row justify-content-between">
+                <div class="card border-warning mb-3 ms-3" style="max-width: 26rem; ">
                     <div class="card-header"><h6>Quantidade de leite produzido por semana</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title">500 L</h5>
+                        <h5 class="card-title text-center">500 L</h5>
                     </div>
                 </div>
 
-                <div class="card text-bg-primary mb-3 ms-3" style="max-width: 28rem;">
+                <div class="card border-warning mb-3 ms-3" style="max-width: 50rem;">
                     <div class="card-header"><h6>Total de animais que tenham até 1 ano de
                             idade e que consumam mais de 500Kg de ração</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title">103 animais</h5>
+                        <h5 class="card-title text-center">103 animais</h5>
                     </div>
                 </div>
 
-                <div class="card text-bg-warning mb-3 ms-3" style="max-width: 24rem;">
+                <div class="card border-warning mb-3 ms-3 me-2" style="max-width: 26rem;">
                     <div class="card-header"><h6>Quatidade de ração necessária por semana</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title">2000 kg</h5>
+                        <h5 class="card-title text-center">2000 kg</h5>
                     </div>
                 </div>
 
@@ -31,7 +31,6 @@
         {% block formulario %}{% endblock %}
         {% block lista %}{% endblock %}
 
-        {% block editar %}{% endblock %}
 
 {% endblock %}
 
