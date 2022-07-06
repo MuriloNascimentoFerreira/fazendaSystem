@@ -15,10 +15,17 @@ class AnimalType extends AbstractType {
     {
         $builder
             ->add('leite', TextType::class,
-                ['label' => 'Leite por semana: ', 'row_attr' => ['class' => 'col-sm-2'], 'attr' => ['placeholder' => 'Litros']])
+                ['label' => 'Leite por semana(L): ',
+                    'row_attr' => ['class' => 'col-sm-2'],
+                    'attr' => ['placeholder' => '0.0 L']])
             ->add('racao', TextType::class,
-                ['label' => 'Ração por semana: ', 'row_attr' => ['class' => 'col-sm-2'], 'attr' => ['placeholder' => 'Kg']])
-            ->add('peso', TextType::class, ['label' => 'Peso: ', 'row_attr' => ['class' => 'col-sm-2'], 'attr' => ['placeholder' => 'Kg']])
+                ['label' => 'Ração por semana:',
+                    'row_attr' => ['class' => 'col-sm-2'],
+                    'attr' => ['placeholder' => '0.0 Kg']])
+            ->add('peso', TextType::class,
+                ['label' => 'Peso:',
+                    'row_attr' => ['class' => 'col-sm-2'],
+                    'attr' => ['placeholder' => '0.0 Kg']])
             ->add('nascimento', DateType::class,
                 ['label' => 'Data de Nascimento: ',
                     'html5' => true,
