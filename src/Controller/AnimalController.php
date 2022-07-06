@@ -79,11 +79,11 @@ class AnimalController extends AbstractController
             try{
                 $orm->persist($animal);
                 $orm->flush();
-                $this->addFlash('success',"Animal Alterado com sucesso!");
+                $this->addFlash('successEdit',"Animal Alterado com sucesso!");
             //    return $this->redirectToRoute("animal_editar",['id'=>$id]);
 
             }catch (\Exception $e){
-                $this->addFlash('erro','Falha ao Alterar o animal!');
+                $this->addFlash('erroEdit','Falha ao Alterar o animal!');
             //    return $this->redirectToRoute("animal_editar",['id'=>$id]);
             }
             return $this->redirectToRoute("animal_adicionar");
@@ -93,6 +93,23 @@ class AnimalController extends AbstractController
         $data['formulario'] = $formulario;
         $data['id'] = $animal->getId();
         return $this->renderForm('animal/editar.html.twig', $data);
+    }
+
+    /**
+     * @Route("/excluir/{id}", name="animal_excluir")
+     */
+    public function excluir(int $id, EntityManagerInterface $orm)
+    {
+        try{
+            $animal = $orm->getRepository(Animal::class)->find($id);
+            $orm->getRepository(Animal::class)->remove($animal);
+            $orm->flush();
+            $this->addFlash('successRemove',"Animal excluido com sucesso!");
+
+        }catch (\Exception $e){
+            $this->addFlash('erroRemove','Falha ao excluir o animal!');
+        }
+        return $this->redirectToRoute("animal_adicionar");
     }
 
 }
