@@ -11,8 +11,8 @@ class Situacao
         switch($situacao){
             case 1: return Situacao::VIVO;
             case 2: return Situacao::ABATIDO;
-            case 'Vivo': return 1;
-            case 'Abatido': return 2;
+            case 'vivo': return 1;
+            case 'abatido': return 2;
         }
         return $situacao;
     }
