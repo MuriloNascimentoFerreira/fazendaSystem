@@ -77,13 +77,25 @@ class AnimalRepository extends ServiceEntityRepository
             ;
     }
 
-//    public function findDemanadaRacao(): ?Animal
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findDemandaRacao(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('sum(a.racao)')
+            ->andWhere('a.situacao = :situacao')
+            ->setParameter('situacao', 1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function findProducaoLeite(): ?array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('sum(a.leite)')
+            ->andWhere('a.situacao = :situacao')
+            ->setParameter('situacao', 1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

@@ -5,24 +5,53 @@ namespace App\Controller;
 use App\Entity\Animal;
 use App\Enumeration\Situacao;
 use App\Form\AnimalType;
-use App\Repository\AnimalRepository;
-use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AnimalController extends AbstractController
 {
-
-    public function index(): Response
+    protected $data;
+    public function __construct()
     {
+        $this->data = array();
+    }
 
-        return $this->render('homePage.html.twig');
+    public function index($orm): Response
+    {
+        $this->data['animais'] = array();
+        $this->data['producao_leite'] = array();
+        $this->data['demanda_racao'] = array();
+
+        $this->data['animais'] = $this->listar($orm);
+        $this->data['producao_leite'] = $this->producaoLeite($orm);
+        $this->data['demanda_racao'] = $this->demandaRacao($orm);
+
+        return $this->render('homePage.html.twig',$this->data);
+    }
+
+    public function producaoLeite($entityManager):float
+    {
+        $quantidade = 0.0;
+        try{
+            $quantidade = $entityManager->getRepository(Animal::class)->findProducaoLeite()[1];
+        }catch (\Exception $e){
+            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+        }
+        return $quantidade;
+    }
+
+    public function demandaRacao($entityManager):float
+    {
+        $quantidade = 0.0;
+        try{
+            $quantidade = $entityManager->getRepository(Animal::class)->findDemandaRacao()[1];
+        }catch (\Exception $e){
+            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+        }
+        return $quantidade;
     }
 
     public function listar($entityManager): array
@@ -39,15 +68,15 @@ class AnimalController extends AbstractController
     /**
      * @Route("/", name="animal_adicionar")
      */
-    public function adicionar(Request $request,EntityManagerInterface $em) : Response
+    public function adicionar(Request $request,EntityManagerInterface $orm) : Response
     {
-        $this->index();
-        $animais = $this->listar($em);
+        $this->index($orm);
+
         $animal = new Animal();
         $Situacao = new Situacao();
-        $data['id'] = '!';
+        $this->data['id'] = '!';
         try{
-            $data['id'] = $em->getRepository(Animal::class)->findNextId() + 1;
+            $this->data['id'] = $orm->getRepository(Animal::class)->findNextId() + 1;
         }catch (\Exception $e){
             $this->addFlash('erroADD','Falha ao conectar com Banco de dados!');
         }
@@ -63,8 +92,8 @@ class AnimalController extends AbstractController
             $animal->setSituacao($Situacao::getSituacao(Situacao::VIVO));
 
             try{
-                $em->persist($animal);
-                $em->flush();
+                $orm->persist($animal);
+                $orm->flush();
                 $this->addFlash('success',"Animal inserido com sucesso!");
             }catch (\Exception $e){
                 $this->addFlash('erro','Falha ao adicionar animal!');
@@ -72,10 +101,9 @@ class AnimalController extends AbstractController
             return $this->redirectToRoute("animal_adicionar");
         }
 
-        $data['titulo'] = 'Adicionar Animal';
-        $data['form'] = $form;
-        $data['animais'] = $animais;
-        return $this->renderForm('animal/form.html.twig',$data);
+        $this->data['titulo'] = 'Adicionar Animal';
+        $this->data['form'] = $form;
+        return $this->renderForm('animal/form.html.twig',$this->data);
     }
 
     /**
@@ -144,7 +172,7 @@ class AnimalController extends AbstractController
 
         try{
             $animal = $orm->getRepository(Animal::class)->find($id);
-            $animal->setSituacao(Situacao::getSituacao("abatido"));
+            $animal->setSituacao(Situacao::getSituacao("Abatido"));
             $orm->persist($animal);
             $orm->flush();
             $this->addFlash('successAbate',"Animal Abatido com sucesso!");

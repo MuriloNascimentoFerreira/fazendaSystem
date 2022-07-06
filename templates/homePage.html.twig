@@ -6,7 +6,7 @@
                 <div class="card border-warning mb-3 ms-3" style="max-width: 18rem; ">
                     <div class="card-header"><h6>Produção de leite semanal</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title text-center">500 L</h5>
+                        <h5 class="card-title text-center">{{ producao_leite}} L</h5>
                     </div>
                 </div>
 
@@ -14,14 +14,14 @@
                     <div class="card-header"><h6 class="text-center">Animais que tenham até 1 ano de
                             idade e que consumam mais de 500Kg de ração semanalmente</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title text-center">103 animais</h5>
+                        <h5 class="card-title text-center">500 animais</h5>
                     </div>
                 </div>
 
                 <div class="card border-warning mb-3 ms-3 me-2" style="max-width: 18rem;">
                     <div class="card-header"><h6>Demanda de ração semanal</h6></div>
                     <div class="card-body">
-                        <h5 class="card-title text-center">2000 kg</h5>
+                        <h5 class="card-title text-center">{{ demanda_racao }} kg</h5>
                     </div>
                 </div>
 
@@ -30,7 +30,6 @@
 
         {% block formulario %}{% endblock %}
         {% block lista %}{% endblock %}
-
 
 {% endblock %}
 
