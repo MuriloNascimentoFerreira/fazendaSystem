@@ -58,7 +58,7 @@ class AnimalController extends AbstractController
         $animais = $this->listar($em);
         $animal = new Animal();
         $Situacao = new Situacao();
-
+        $data['id'] = $em->getRepository(Animal::class)->findNextId() + 1;
         try{
             $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
             $form->handleRequest($request);
@@ -110,7 +110,7 @@ class AnimalController extends AbstractController
 
         $data['titulo'] = 'Editar Animal';
         $data['formulario'] = $formulario;
-
+        $data['id'] = $animal->getId();
         return $this->renderForm('animal/editar.html.twig', $data);
     }
 

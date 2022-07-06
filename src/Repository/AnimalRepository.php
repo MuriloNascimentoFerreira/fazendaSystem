@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Animal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @extends ServiceEntityRepository<Animal>
@@ -39,6 +40,14 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
+    public function findNextId():?int
+    {
+        $conexao = $this->getEntityManager()->getConnection();
+        $db = $conexao->prepare("SELECT MAX(id) FROM animal");
+        $result = $db->executeQuery();
+        $id = $result->fetchNumeric();
+        return $id[0];
+    }
 
 //    /**
 //     * @return Animal[] Returns an array of Animal objects
