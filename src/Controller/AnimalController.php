@@ -26,7 +26,12 @@ class AnimalController extends AbstractController
 
     public function listar($entityManager): array
     {
-        $animais = $entityManager->getRepository(Animal::class)->findAll();
+        $animais = array();
+        try{
+            $animais = $entityManager->getRepository(Animal::class)->findAll();
+        }catch (\Exception $e){
+            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+        }
         return $animais;
     }
 
@@ -39,7 +44,13 @@ class AnimalController extends AbstractController
         $animais = $this->listar($em);
         $animal = new Animal();
         $Situacao = new Situacao();
-        $data['id'] = $em->getRepository(Animal::class)->findNextId() + 1;
+        $data['id'] = '!';
+        try{
+            $data['id'] = $em->getRepository(Animal::class)->findNextId() + 1;
+        }catch (\Exception $e){
+            $this->addFlash('erroADD','Falha ao conectar com Banco de dados!');
+        }
+
         try{
             $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
             $form->handleRequest($request);
@@ -111,5 +122,7 @@ class AnimalController extends AbstractController
         }
         return $this->redirectToRoute("animal_adicionar");
     }
+
+
 
 }
