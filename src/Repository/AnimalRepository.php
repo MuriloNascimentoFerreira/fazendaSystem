@@ -60,7 +60,6 @@ class AnimalRepository extends ServiceEntityRepository
             ->setParameters(['leite'=> 70, 'racao'=> 350])
             ->setParameter('situacao', 1)
             ->setParameter('peso', 270)
-            ->orderBy('a.id', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -97,5 +96,40 @@ class AnimalRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
             ;
+    }
+
+    //retorna o total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
+    public function getTotal():?int
+    {
+        $conexao = $this->getEntityManager()->getConnection();
+        $db = $conexao->prepare("SELECT COUNT(*) FROM animal WHERE TIMESTAMPDIFF(YEAR,nascimento,CURRENT_DATE()) <= 1 AND racao > 500");
+        $result = $db->executeQuery();
+        $quantidade = $result->fetchNumeric();
+        return $quantidade[0];
+    }
+
+    public function getAbateAnimaisIdadeMaiorCinco()
+    {
+        $conexao = $this->getEntityManager()->getConnection();
+        $db = $conexao->prepare("SELECT * FROM animal WHERE TIMESTAMPDIFF(YEAR,nascimento,CURRENT_DATE()) > 5 AND situacao = 1");
+        $result = $db->executeQuery();
+        $dados = $result->fetchAllAssociative();
+        $animais = array();
+
+        if($result){
+            foreach($dados as $item){
+                $animal = new Animal();
+                $animal->setId($item['id']);
+                $animal->setLeite($item['leite']);
+                $animal->setRacao($item['racao']);
+                $animal->setPeso($item['peso']);
+                $nascimento = new \DateTime($item['nascimento']);
+                $animal->setNascimento($nascimento);
+                $animal->setSituacao($item['situacao']);
+                $animais[] = $animal;
+            }
+        }
+
+        return $animais;
     }
 }

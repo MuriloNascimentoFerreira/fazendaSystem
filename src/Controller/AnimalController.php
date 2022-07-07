@@ -21,10 +21,14 @@ class AnimalController extends AbstractController
 
     public function index($orm): Response
     {
+        //total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
+        $this->data['relatorio1'] = array();
+
         $this->data['animais'] = array();
         $this->data['producao_leite'] = array();
         $this->data['demanda_racao'] = array();
 
+        $this->data['relatorio1'] = $this->relatorio1($orm);
         $this->data['animais'] = $this->listar($orm);
         $this->data['producao_leite'] = $this->producaoLeite($orm);
         $this->data['demanda_racao'] = $this->demandaRacao($orm);
@@ -63,6 +67,18 @@ class AnimalController extends AbstractController
             $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
         }
         return $animais;
+    }
+
+    //retorna o total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
+    private function relatorio1($orm)
+    {
+        $quantidade = 0;
+        try{
+            $quantidade = $orm->getRepository(Animal::class)->getTotal();
+        }catch (\Exception $e){
+            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+        }
+        return $quantidade;
     }
 
     /**
@@ -157,7 +173,21 @@ class AnimalController extends AbstractController
      */
     public function pageAbate(EntityManagerInterface $orm): Response
     {
-        $animais = $orm->getRepository(Animal::class)->findAnimaisAbate();
+
+        $animais = array(Animal::class);
+        $animais2 = array(Animal::class);
+        try{
+            $animais = $orm->getRepository(Animal::class)->findAnimaisAbate();
+            $animais2 = $orm->getRepository(Animal::class)->getAbateAnimaisIdadeMaiorCinco();
+        }catch (\Exception $e){
+            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+        }
+
+        foreach ($animais2 as $animal){
+            if (!in_array($animal, $animais)){
+                $animais[] = $animal;
+            }
+        }
 
         $data['titulo'] = 'Lista de Gados para abate';
         $data['animais'] = $animais;
