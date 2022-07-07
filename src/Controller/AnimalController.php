@@ -136,11 +136,8 @@ class AnimalController extends AbstractController
                 $orm->persist($animal);
                 $orm->flush();
                 $this->addFlash('successEdit',"Animal Alterado com sucesso!");
-            //    return $this->redirectToRoute("animal_editar",['id'=>$id]);
-
             }catch (\Exception $e){
                 $this->addFlash('erroEdit','Falha ao Alterar o animal!');
-            //    return $this->redirectToRoute("animal_editar",['id'=>$id]);
             }
             return $this->redirectToRoute("animal_adicionar");
         }

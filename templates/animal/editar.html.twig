@@ -1,17 +1,14 @@
-{{ include('base.html.twig') }}
-
+{% extends 'base.html.twig' %}
 {% block stylesheets %}
-    <style>
-        .col-sm-2{
-            min-width: 200px;
-        }
-        .align-items-center{
-            max-width: 1026px;
-        }
-
-    </style>
+<style>
+    .col-sm-2{
+        min-width: 200px;
+    }
+    .align-items-center{
+        max-width: 1026px;
+    }
+</style>
 {% endblock %}
-
 {% block body %}
     <div class="container" style="padding-top: 77px">
         <div class="card border-dark" style="width: fit-content">
