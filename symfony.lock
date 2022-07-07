@@ -38,6 +38,9 @@
             "migrations/.gitignore"
         ]
     },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v5.3.0"
+    },
     "phpunit/phpunit": {
         "version": "8.5",
         "recipe": {
