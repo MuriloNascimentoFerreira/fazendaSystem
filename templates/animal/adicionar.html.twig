@@ -1,4 +1,4 @@
-{% extends 'homePage.html.twig' %}
+{% extends 'base.html.twig' %}
 {% block stylesheets %}
 <style>
     .col-sm-2{
@@ -10,8 +10,8 @@
 </style>
 {% endblock %}
 
-{% block formulario %}
-    <div class="container mt-1">
+{% block body %}
+    <div class="container" style="padding-top: 75px">
         <div class="card border-dark m-auto" style="width: fit-content;">
 
             <div class="card-body text-dark">
@@ -21,6 +21,7 @@
             {{ include('includes/alertsADD.html.twig') }}
         </div>
         {{ include('animal/lista.html.twig',animais) }}
+        {% block lista %}{% endblock %}
     </div>
 
 {% endblock %}

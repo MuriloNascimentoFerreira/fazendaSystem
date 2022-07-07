@@ -6,6 +6,7 @@ use App\Entity\Animal;
 use App\Enumeration\Situacao;
 use App\Form\AnimalType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Repository\RepositoryFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,17 +20,18 @@ class AnimalController extends AbstractController
         $this->data = array();
     }
 
-    public function index($orm): Response
+    /**
+     * @Route("/", name="home_page")
+     */
+    public function index(EntityManagerInterface $orm): Response
     {
         //total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
         $this->data['relatorio1'] = array();
 
-        $this->data['animais'] = array();
         $this->data['producao_leite'] = array();
         $this->data['demanda_racao'] = array();
 
         $this->data['relatorio1'] = $this->relatorio1($orm);
-        $this->data['animais'] = $this->listar($orm);
         $this->data['producao_leite'] = $this->producaoLeite($orm);
         $this->data['demanda_racao'] = $this->demandaRacao($orm);
 
@@ -82,17 +84,17 @@ class AnimalController extends AbstractController
     }
 
     /**
-     * @Route("/", name="animal_adicionar")
+     * @Route("/adicionar", name="animal_adicionar")
      */
     public function adicionar(Request $request,EntityManagerInterface $orm) : Response
     {
-        $this->index($orm);
-
         $animal = new Animal();
         $Situacao = new Situacao();
-        $this->data['id'] = '!';
+        $data['animais'] = array();
+        $data['animais'] = $this->listar($orm);
+        $data['id'] = '!';
         try{
-            $this->data['id'] = $orm->getRepository(Animal::class)->findNextId() + 1;
+            $data['id'] = $orm->getRepository(Animal::class)->findNextId() + 1;
         }catch (\Exception $e){
             $this->addFlash('erroADD','Falha ao conectar com Banco de dados!');
         }
@@ -117,9 +119,9 @@ class AnimalController extends AbstractController
             return $this->redirectToRoute("animal_adicionar");
         }
 
-        $this->data['titulo'] = 'Adicionar Animal';
-        $this->data['form'] = $form;
-        return $this->renderForm('animal/form.html.twig',$this->data);
+        $data['titulo'] = 'Adicionar Animal';
+        $data['form'] = $form;
+        return $this->renderForm('animal/adicionar.html.twig',$data);
     }
 
     /**

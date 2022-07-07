@@ -1,59 +1,60 @@
 {% block lista %}
+    <div class="container">
+        <h4 class="mt-3">Lista de Gados</h4>
+        {{ include('includes/alertsRemove.hmtl.twig') }}
+        {{ include('includes/alertsEdit.hmtl.twig') }}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="row">#</th>
+                        <th scope="col">Leite por semana(L)</th>
+                        <th scope="col">Ração por semana(Kg)</th>
+                        <th scope="col">Peso(Kg)</th>
+                        <th scope="col">Data de Nascimento</th>
+                        <th scope="col">Situação</th>
+                        <th scope="col">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for animal in animais %}
+                    <tr>
+                        <td>{{ animal.id }}</td>
+                        <td>{{ animal.leite }}</td>
+                        <td>{{ animal.racao }}</td>
+                        <td>{{ animal.peso }}</td>
+                        <td>{{ animal.nascimento|date("d/m/Y") }}</td>
+                        <td>{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
+                        <td> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
+                        <td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
+                    </tr>
 
-    <h4 class="mt-3">Lista de Gados</h4>
-    {{ include('includes/alertsRemove.hmtl.twig') }}
-    {{ include('includes/alertsEdit.hmtl.twig') }}
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="row">#</th>
-                    <th scope="col">Leite por semana(L)</th>
-                    <th scope="col">Ração por semana(Kg)</th>
-                    <th scope="col">Peso(Kg)</th>
-                    <th scope="col">Data de Nascimento</th>
-                    <th scope="col">Situação</th>
-                    <th scope="col">Editar</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for animal in animais %}
-                <tr>
-                    <td>{{ animal.id }}</td>
-                    <td>{{ animal.leite }}</td>
-                    <td>{{ animal.racao }}</td>
-                    <td>{{ animal.peso }}</td>
-                    <td>{{ animal.nascimento|date("d/m/Y") }}</td>
-                    <td>{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
-                    <td> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
-                    <td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
-                </tr>
-
-                <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
-                    <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Confirmar Exclusão</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Tem certeza que deseja excluir esse animal? #{{ animal.id }}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Sim</button>
+                    <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
+                        <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirmar Exclusão</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Tem certeza que deseja excluir esse animal? #{{ animal.id }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Sim</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            {% endfor %}
+                    </form>
+                {% endfor %}
 
-            </tbody>
-            <tfoot>
+                </tbody>
+                <tfoot>
 
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        </div>
     </div>
 {% endblock %}
