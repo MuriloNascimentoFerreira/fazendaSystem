@@ -40,13 +40,22 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
-    public function findNextId():?int
+    public function findCodigo($codigo):?bool
     {
-        $conexao = $this->getEntityManager()->getConnection();
-        $db = $conexao->prepare("SELECT MAX(id) FROM animal");
-        $result = $db->executeQuery();
-        $id = $result->fetchNumeric();
-        return $id[0];
+        $a = $this->createQueryBuilder('a')
+            ->andWhere('a.situacao = :situacao') //situacao = 1
+            ->andWhere('a.codigo = :codigo') //codigo = $codigo
+            ->setParameter('situacao', 1)
+            ->setParameter('codigo', $codigo)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+
+        if($a){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function findAnimaisAbate(): array
@@ -120,6 +129,7 @@ class AnimalRepository extends ServiceEntityRepository
             foreach($dados as $item){
                 $animal = new Animal();
                 $animal->setId($item['id']);
+                $animal->setCodigo($item['codigo']);
                 $animal->setLeite($item['leite']);
                 $animal->setRacao($item['racao']);
                 $animal->setPeso($item['peso']);

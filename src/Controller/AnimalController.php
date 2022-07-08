@@ -93,32 +93,32 @@ class AnimalController extends AbstractController
         $Situacao = new Situacao();
         $data['animais'] = array();
         $data['animais'] = $this->listar($orm);
-        $data['id'] = '!';
 
         $data['animais'] = $paginator->paginate($data['animais'],$request->query->getInt('page',1),8);
-        try{
-            $data['id'] = $orm->getRepository(Animal::class)->findNextId() + 1;
-        }catch (\Exception $e){
-            $this->addFlash('erroADD','Falha ao conectar com Banco de dados!');
-        }
 
         try{
             $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
             $form->handleRequest($request);
+
         }catch (\Exception $e){
-            $this->addFlash('erro','Falha ao adicionar animal!');
+            $this->addFlash('erro','Falha ao adicionar animalll!');
         }
 
         if($form->isSubmitted() && $form->isValid()){
             $animal->setSituacao($Situacao::getSituacao(Situacao::VIVO));
-
-            try{
-                $orm->persist($animal);
-                $orm->flush();
-                $this->addFlash('success',"Animal inserido com sucesso!");
-            }catch (\Exception $e){
-                $this->addFlash('erro','Falha ao adicionar animal!');
+            if(!$orm->getRepository(Animal::class)->findCodigo($animal->getCodigo())){
+                try{
+                    $orm->persist($animal);
+                    $orm->flush();
+                    $this->addFlash('success',"Animal inserido com sucesso!");
+                }catch (\Exception $e){
+                    $this->addFlash('erro','Falha ao adicionar o animal!');
+                }
+            }else{
+                $this->addFlash('erro','Falha ao adicionar, código do animal já existente!');
             }
+
+
             return $this->redirectToRoute("animal_adicionar");
         }
 
@@ -136,15 +136,20 @@ class AnimalController extends AbstractController
         $animal = $orm->getRepository(Animal::class)->find($id);
         $formulario = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
         $formulario->handleRequest($request);
-
         if($formulario->isSubmitted() && $formulario->isValid()){
-            try{
-                $orm->persist($animal);
-                $orm->flush();
-                $this->addFlash('successEdit',"Animal Alterado com sucesso!");
-            }catch (\Exception $e){
-                $this->addFlash('erroEdit','Falha ao Alterar o animal!');
+
+            if(!$orm->getRepository(Animal::class)->findCodigo($animal->getCodigo())){
+                try{
+                    $orm->persist($animal);
+                    $orm->flush();
+                    $this->addFlash('successEdit',"Animal Alterado com sucesso!");
+                }catch (\Exception $e){
+                    $this->addFlash('erroEdit','Falha ao Alterar o animal!');
+                }
+            }else{
+                $this->addFlash('erro','Falha ao editar, código do animal já existente!');
             }
+
             return $this->redirectToRoute("animal_adicionar");
         }
 

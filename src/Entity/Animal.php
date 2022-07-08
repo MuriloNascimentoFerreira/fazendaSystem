@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AnimalRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AnimalRepository::class)
@@ -41,6 +42,11 @@ class Animal
      * @ORM\Column(type="integer")
      */
     private $situacao;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $codigo;
 
     public function setId($id){
         $this->id = $id;
@@ -107,6 +113,18 @@ class Animal
     public function setSituacao(int $situacao): self
     {
         $this->situacao = $situacao;
+
+        return $this;
+    }
+
+    public function getCodigo(): ?int
+    {
+        return $this->codigo;
+    }
+
+    public function setCodigo(int $codigo): self
+    {
+        $this->codigo = $codigo;
 
         return $this;
     }
