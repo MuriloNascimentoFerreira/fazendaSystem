@@ -109,7 +109,7 @@
                         field.style = 'box-shadow: 0 0 0 0.2rem rgb(63, 237, 63, 0.404);'+ 'border-color: rgb(63, 237, 63, 0.695)'
                         field.setAttribute('required','valid')
                     }else {
-                        if(field.placeholder != "dd/mm/aaaa"){
+                        if(field.placeholder !== "dd/mm/aaaa"){
                             field.style = 'box-shadow: 0 0 0 0.2rem rgb(255, 0, 0, 0.404);' + 'border-color: red'
                             field.setAttribute('valid', 'required')
                         }
@@ -120,10 +120,10 @@
 
             document.querySelector("form").addEventListener("submit", event => {
                 for (ele of fields) {
-                    if ((!isNumeric(ele.value) || ele.value.length == 0) && ele.placeholder != "dd/mm/aaaa" ) {
+                    if ((!isNumeric(ele.value) || ele.value.length === 0) && ele.placeholder !== "dd/mm/aaaa" ) {
                         console.log(ele.value)
                         console.log(ele.value.length)
-                        console.log(ele.placeholder != "dd/mm/aaaa" )
+                        console.log(ele.placeholder !== "dd/mm/aaaa" )
                         console.log(isNumeric(ele.value))
                         ele.focus()
                         event.preventDefault()

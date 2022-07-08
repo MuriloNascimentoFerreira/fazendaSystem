@@ -1,10 +1,10 @@
 {% block lista %}
     <div class="container">
-        <h4 class="mt-3">Lista de Gados</h4>
+        <h2 class="mt-3">Lista de Gados</h2>
         {{ include('includes/alertsRemove.hmtl.twig') }}
         {{ include('includes/alertsEdit.hmtl.twig') }}
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered border-warning table-striped">
                 <thead>
                     <tr>
                         <th scope="row">#</th>
@@ -14,19 +14,20 @@
                         <th scope="col">Data de Nascimento</th>
                         <th scope="col">Situação</th>
                         <th scope="col">Editar</th>
+                        <th scope="col">Excluir</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                 {% for animal in animais %}
                     <tr>
-                        <td>{{ animal.id }}</td>
-                        <td>{{ animal.leite }}</td>
-                        <td>{{ animal.racao }}</td>
-                        <td>{{ animal.peso }}</td>
-                        <td>{{ animal.nascimento|date("d/m/Y") }}</td>
-                        <td>{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
-                        <td> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
-                        <td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
+                        <th scope="row">{{ animal.id }}</th>
+                        <td class="text-center">{{ animal.leite }}</td>
+                        <td class="text-center">{{ animal.racao }}</td>
+                        <td class="text-center">{{ animal.peso }}</td>
+                        <td class="text-center">{{ animal.nascimento|date("d/m/Y") }}</td>
+                        <td class="text-center">{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
+                        <td class="text-center"> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
+                        <td class="text-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
                     </tr>
 
                     <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
@@ -52,9 +53,9 @@
 
                 </tbody>
                 <tfoot>
-
                 </tfoot>
             </table>
         </div>
+        {{ knp_pagination_render(animais) }}
     </div>
 {% endblock %}

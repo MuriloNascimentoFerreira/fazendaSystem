@@ -3,9 +3,9 @@
 
     <div class="container" style="padding-top: 77px">
         {{ include('includes/alertsAbate.hmtl.twig') }}
-        <h4>{{ titulo }}</h4>
+        <h2>{{ titulo }}</h2>
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered border-warning table-striped">
                 <thead>
                     <tr>
                         <th scope="row">#</th>
@@ -16,23 +16,23 @@
                         <th scope="col">Situação</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                 {% for animal in animais %}
                     <tr>
-                        <td>{{ animal.id }}</td>
-                        <td>{{ animal.leite }}</td>
-                        <td>{{ animal.racao }}</td>
-                        <td>{{ animal.peso }}</td>
-                        <td>{{ animal.nascimento|date("d/m/Y") }}</td>
-                        <td>{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
+                        <th scope="row">{{ animal.id }}</th>
+                        <td class="text-center">{{ animal.leite }}</td>
+                        <td class="text-center">{{ animal.racao }}</td>
+                        <td class="text-center">{{ animal.peso }}</td>
+                        <td class="text-center">{{ animal.nascimento|date("d/m/Y") }}</td>
+                        <td class="text-center">{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
                     </tr>
                 {% endfor %}
 
                 </tbody>
                 <tfoot>
-
                 </tfoot>
             </table>
         </div>
+        {{ knp_pagination_render(animais) }}
     </div>
 {% endblock %}
