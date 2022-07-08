@@ -7,6 +7,7 @@ use App\Enumeration\Situacao;
 use App\Form\AnimalType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\RepositoryFactory;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,13 +87,15 @@ class AnimalController extends AbstractController
     /**
      * @Route("/adicionar", name="animal_adicionar")
      */
-    public function adicionar(Request $request,EntityManagerInterface $orm) : Response
+    public function adicionar(Request $request,EntityManagerInterface $orm, PaginatorInterface $paginator) : Response
     {
         $animal = new Animal();
         $Situacao = new Situacao();
         $data['animais'] = array();
         $data['animais'] = $this->listar($orm);
         $data['id'] = '!';
+
+        $data['animais'] = $paginator->paginate($data['animais'],$request->query->getInt('page',1),8);
         try{
             $data['id'] = $orm->getRepository(Animal::class)->findNextId() + 1;
         }catch (\Exception $e){
@@ -118,6 +121,7 @@ class AnimalController extends AbstractController
             }
             return $this->redirectToRoute("animal_adicionar");
         }
+
 
         $data['titulo'] = 'Adicionar Animal';
         $data['form'] = $form;
@@ -170,7 +174,7 @@ class AnimalController extends AbstractController
     /**
      * @Route("/page_abate", name="animais_abate")
      */
-    public function pageAbate(EntityManagerInterface $orm): Response
+    public function pageAbate(EntityManagerInterface $orm, Request $request, PaginatorInterface $paginator): Response
     {
 
         $animais = array(Animal::class);
@@ -187,6 +191,8 @@ class AnimalController extends AbstractController
                 $animais[] = $animal;
             }
         }
+
+        $animais = $paginator->paginate($animais,$request->query->getInt('page',1),8);
 
         $data['titulo'] = 'Lista de Gados para abate';
         $data['animais'] = $animais;
@@ -215,7 +221,7 @@ class AnimalController extends AbstractController
     /**
      * @Route("/abatidos", name="animais_abatidos")
      */
-    public function relatorioAnimaisAbatidos(EntityManagerInterface $orm): Response
+    public function relatorioAnimaisAbatidos(EntityManagerInterface $orm, Request $request, PaginatorInterface $paginator): Response
     {
         $animais = array();
         try{
@@ -223,8 +229,9 @@ class AnimalController extends AbstractController
         }catch (\Exception $e){
             $this->addFlash('erroAbate','Falha ao Acessar o banco de dados!');
         }
+
+        $data['animais'] = $paginator->paginate($animais,$request->query->getInt('page',1),8);
         $data['titulo'] = 'Lista de Gados Abatidos';
-        $data['animais'] = $animais;
         return $this->render('animal/relatorios/abatidos.html.twig',$data);
     }
 
