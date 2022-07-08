@@ -30,7 +30,7 @@
                         <td class="text-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
                     </tr>
 
-                    <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
+                    <form action="{{ path('animal_excluir',{id: animal.codigo}) }}" method="POST">
                         <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
