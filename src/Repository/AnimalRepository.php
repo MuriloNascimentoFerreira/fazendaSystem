@@ -40,16 +40,36 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
-    public function findCodigo($codigo):?bool
+    public function findCodigo($animal):?bool
     {
         $a = $this->createQueryBuilder('a')
             ->andWhere('a.situacao = :situacao') //situacao = 1
             ->andWhere('a.codigo = :codigo') //codigo = $codigo
             ->setParameter('situacao', 1)
-            ->setParameter('codigo', $codigo)
+            ->setParameter('codigo', $animal->getCodigo())
             ->getQuery()
             ->getOneOrNullResult()
             ;
+
+        if($a){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function findCodigoEditar($animal):?bool
+    {
+        $a = $this->createQueryBuilder('a')
+            ->andWhere('a.situacao = :situacao') //situacao = 1
+            ->andWhere('a.codigo = :codigo') //codigo = $codigo
+            ->andWhere('a.id <> :id') //id = id
+            ->setParameter('situacao', 1)
+            ->setParameter('codigo', $animal->getCodigo())
+            ->setParameter('id', $animal->getId())
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
 
         if($a){
             return true;

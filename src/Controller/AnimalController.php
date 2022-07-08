@@ -106,7 +106,7 @@ class AnimalController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $animal->setSituacao($Situacao::getSituacao(Situacao::VIVO));
-            if(!$orm->getRepository(Animal::class)->findCodigo($animal->getCodigo())){
+            if(!$orm->getRepository(Animal::class)->findCodigo($animal)){
                 try{
                     $orm->persist($animal);
                     $orm->flush();
@@ -138,18 +138,22 @@ class AnimalController extends AbstractController
         $formulario->handleRequest($request);
         if($formulario->isSubmitted() && $formulario->isValid()){
 
-            if(!$orm->getRepository(Animal::class)->findCodigo($animal->getCodigo())){
-                try{
-                    $orm->persist($animal);
-                    $orm->flush();
-                    $this->addFlash('successEdit',"Animal Alterado com sucesso!");
-                }catch (\Exception $e){
-                    $this->addFlash('erroEdit','Falha ao Alterar o animal!');
+            if($animal->getSituacao() == 1) {
+
+                if (!$orm->getRepository(Animal::class)->findCodigoEditar($animal)) {
+                    try {
+                        $orm->persist($animal);
+                        $orm->flush();
+                        $this->addFlash('successEdit', "Animal Alterado com sucesso!");
+                    } catch (\Exception $e) {
+                        $this->addFlash('erroEdit', 'Falha ao Alterar o animal!');
+                    }
+                } else {
+                    $this->addFlash('erro', 'Falha ao editar, código do animal já existente!');
                 }
             }else{
-                $this->addFlash('erro','Falha ao editar, código do animal já existente!');
+                $this->addFlash('erro', 'Falha ao editar, não é possivel editar animal abatido!');
             }
-
             return $this->redirectToRoute("animal_adicionar");
         }
 
