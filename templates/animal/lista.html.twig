@@ -30,7 +30,7 @@
                         <td class="text-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
                     </tr>
 
-                    <form action="{{ path('animal_excluir',{id: animal.codigo}) }}" method="POST">
+                    <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
                         <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -39,7 +39,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Tem certeza que deseja excluir esse animal? #{{ animal.id }}</p>
+                                        <p>Tem certeza que deseja excluir esse animal? #{{ animal.codigo }}</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
