@@ -13,15 +13,13 @@
 {% block body %}
     <div class="container" style="padding-top: 75px">
         <div class="card border-dark m-auto" style="width: fit-content;">
-
             <div class="card-body text-dark">
                 <div class="card-title"><h2 class="d-inline-block">{{ titulo }}</h2> <div class="d-inline-block" style="font-size: 1.5rem"></div></div>
-                {{ form(form) }}
+                    {{ form(form) }}
             </div>
             {{ include('includes/alertsADD.html.twig') }}
         </div>
         {{ include('animal/lista.html.twig') }}
         {% block lista %}{% endblock %}
     </div>
-
 {% endblock %}

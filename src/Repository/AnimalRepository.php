@@ -3,9 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Animal;
+use App\Enumeration\Situacao;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Utils;
 
 /**
  * @extends ServiceEntityRepository<Animal>
@@ -40,7 +41,7 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
-    public function findCodigo($animal):?bool
+    public function findCodigo($animal)
     {
         $a = $this->createQueryBuilder('a')
             ->andWhere('a.situacao = :situacao') //situacao = 1
@@ -58,7 +59,7 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
-    public function findCodigoEditar($animal):?bool
+    public function findCodigoEditar($animal)
     {
         $a = $this->createQueryBuilder('a')
             ->andWhere('a.situacao = :situacao') //situacao = 1
@@ -78,88 +79,121 @@ class AnimalRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAnimaisAbate(): array
+    public function findAnimaisAbate()
     {
+        $dataAgora = new \DateTime();
+        $date = $dataAgora->sub(new \DateInterval('P5Y'));
         return $this->createQueryBuilder('a')
-            ->orWhere('a.leite < :leite') //40
-            ->orWhere('a.leite < :leite and a.racao > :racao') // leite=70 racao= 350 ()
+            ->where('a.nascimento < :data')
+            ->orWhere('a.leite < :leite')
+            ->orWhere('a.leite < :leite and a.racao > :racao')
+            ->orWhere('a.peso > :peso')
             ->andWhere('a.situacao = :situacao') //situacao = 1
-            ->orWhere('a.peso > :peso') //peso = 270 kilo
             ->setParameter('leite', 40)
             ->setParameters(['leite'=> 70, 'racao'=> 350])
             ->setParameter('situacao', 1)
             ->setParameter('peso', 270)
+            ->setParameter('data', $date)
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findAnimaisAbatidos(): array
+    public function getAnimalPodeSerAbatido($id)
     {
-        return $this->createQueryBuilder('a')
+        $dataAgora = new \DateTime();
+        $date = $dataAgora->sub(new \DateInterval('P5Y'));
+
+        $animal = $this->createQueryBuilder('a')
+        ->where('a.nascimento < :data')
+        ->orWhere('a.leite < :leite')
+        ->orWhere('a.leite < :leite and a.racao > :racao')
+        ->orWhere('a.peso > :peso')
+        ->andWhere('a.id = :id')
+        ->andWhere('a.situacao = :situacao') //situacao = 1
+        ->setParameter('leite', 40)
+        ->setParameters(['leite'=> 70, 'racao'=> 350])
+        ->setParameter('situacao', 1)
+        ->setParameter('peso', 270)
+        ->setParameter('data', $date)
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getOneOrNullResult()
+        ;
+        if($animal){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function findAnimaisAbatidos()
+    {
+        $animais =  $this->createQueryBuilder('a')
             ->andWhere('a.situacao = :situacao') //situacao = 2
             ->setParameter('situacao', 2)
             ->orderBy('a.id', 'ASC')
             ->getQuery()
             ->getResult()
             ;
+
+        if($animais){
+            return $animais;
+        }else{
+            return $animais = array();
+        }
     }
 
-    public function findDemandaRacao(): array
+    public function findDemandaRacao()
     {
-        return $this->createQueryBuilder('a')
+        $demandaRacao = $this->createQueryBuilder('a')
             ->select('sum(a.racao)')
             ->andWhere('a.situacao = :situacao')
             ->setParameter('situacao', 1)
             ->getQuery()
             ->getOneOrNullResult()
             ;
+        if($demandaRacao[1]){
+            return $demandaRacao[1];
+        }else{
+            return 0.0;
+        }
     }
 
-    public function findProducaoLeite(): ?array
+    public function findProducaoLeite()
     {
-        return $this->createQueryBuilder('a')
+        $producao =  $this->createQueryBuilder('a')
             ->select('sum(a.leite)')
             ->andWhere('a.situacao = :situacao')
             ->setParameter('situacao', 1)
             ->getQuery()
             ->getOneOrNullResult()
             ;
+
+        if($producao[1]){
+            return $producao[1];
+        }else{
+            return 0.0;
+        }
     }
 
     //retorna o total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
-    public function getTotal():?int
+    public function getTotal()
     {
-        $conexao = $this->getEntityManager()->getConnection();
-        $db = $conexao->prepare("SELECT COUNT(*) FROM animal WHERE TIMESTAMPDIFF(YEAR,nascimento,CURRENT_DATE()) <= 1 AND racao > 500");
-        $result = $db->executeQuery();
-        $quantidade = $result->fetchNumeric();
-        return $quantidade[0];
+        $dataAgora = new \DateTime();
+        $date = $dataAgora->sub(new \DateInterval('P1Y'));
+        $total = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.nascimento >= :date')
+            ->andWhere('a.situacao = :situacao')
+            ->andWhere('a.racao > :racao')
+            ->setParameter('date', $date)
+            ->setParameter('situacao', Situacao::getSituacao("Vivo"))
+            ->setParameter('racao', 500)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+        return $total[1];
     }
 
-    public function getAbateAnimaisIdadeMaiorCinco()
-    {
-        $conexao = $this->getEntityManager()->getConnection();
-        $db = $conexao->prepare("SELECT * FROM animal WHERE TIMESTAMPDIFF(YEAR,nascimento,CURRENT_DATE()) > 5 AND situacao = 1");
-        $result = $db->executeQuery();
-        $dados = $result->fetchAllAssociative();
-        $animais = array();
-
-        if($result){
-            foreach($dados as $item){
-                $animal = new Animal();
-                $animal->setId($item['id']);
-                $animal->setCodigo($item['codigo']);
-                $animal->setLeite($item['leite']);
-                $animal->setRacao($item['racao']);
-                $animal->setPeso($item['peso']);
-                $nascimento = new \DateTime($item['nascimento']);
-                $animal->setNascimento($nascimento);
-                $animal->setSituacao($item['situacao']);
-                $animais[] = $animal;
-            }
-        }
-
-        return $animais;
-    }
 }
