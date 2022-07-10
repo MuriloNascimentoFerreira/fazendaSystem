@@ -83,7 +83,7 @@ class AnimalRepository extends ServiceEntityRepository
     {
         $dataAgora = new \DateTime();
         $date = $dataAgora->sub(new \DateInterval('P5Y'));
-        return $this->createQueryBuilder('a')
+        $animais = $this->createQueryBuilder('a')
             ->where('a.nascimento < :data')
             ->orWhere('a.leite < :leite')
             ->orWhere('a.leite < :leite and a.racao > :racao')
@@ -97,6 +97,11 @@ class AnimalRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+        if($animais){
+            return $animais;
+        }else{
+            return $animais = array();
+        }
     }
 
     public function getAnimalPodeSerAbatido($id)

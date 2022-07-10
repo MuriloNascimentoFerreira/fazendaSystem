@@ -51,11 +51,13 @@ class AnimalController extends AbstractController
         $data['animais'] = $paginator->paginate($data['animais'],$request->query->getInt('page',1),8);
 
         try{
-            $form = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
+            $form = $this->createForm(AnimalType::class, $animal, [
+                'attr'=> ['class' => 'row align-items-center d-inline-flex']
+            ]);
             $form->handleRequest($request);
 
         }catch (\Exception $e){
-            $this->addFlash('erro','Falha ao adicionar animalll!');
+            $this->addFlash('erroForm','Falha ao adicionar animalll!');
         }
 
         if($form->isSubmitted() && $form->isValid()){
@@ -64,12 +66,12 @@ class AnimalController extends AbstractController
                 try{
                     $orm->persist($animal);
                     $orm->flush();
-                    $this->addFlash('success',"Animal inserido com sucesso!");
+                    $this->addFlash('successForm',"Animal inserido com sucesso!");
                 }catch (\Exception $e){
-                    $this->addFlash('erro','Falha ao adicionar o animal!');
+                    $this->addFlash('erroForm','Falha ao adicionar o animal!');
                 }
             }else{
-                $this->addFlash('erro','Falha ao adicionar, código do animal já existente!');
+                $this->addFlash('erroForm','Falha ao adicionar, código do animal já existente!');
             }
 
 
@@ -88,7 +90,7 @@ class AnimalController extends AbstractController
         try{
             $animais = $entityManager->getRepository(Animal::class)->findAll();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha na listagem!');
+            $this->addFlash('erro','Falha na listagem!');
         }
         return $animais;
     }
@@ -99,7 +101,12 @@ class AnimalController extends AbstractController
     public function editar(int $id,Request $request, EntityManagerInterface $orm): Response
     {
         $animal = $orm->getRepository(Animal::class)->find($id);
-        $formulario = $this->createForm(AnimalType::class, $animal, ['attr'=> ['class' => 'row align-items-center d-inline-flex']]);
+        $formulario = $this->createForm(AnimalType::class, $animal, [
+            'attr'=> [
+                'class' => 'row align-items-center d-inline-flex'
+            ]
+        ]);
+
         $formulario->handleRequest($request);
         if($formulario->isSubmitted() && $formulario->isValid()){
 
@@ -108,9 +115,9 @@ class AnimalController extends AbstractController
                     try {
                         $orm->persist($animal);
                         $orm->flush();
-                        $this->addFlash('successEdit', "Animal Alterado com sucesso!");
+                        $this->addFlash('success', "Animal Alterado com sucesso!");
                     } catch (\Exception $e) {
-                        $this->addFlash('erroEdit', 'Falha ao Alterar o animal!');
+                        $this->addFlash('erro', 'Falha ao Alterar o animal!');
                     }
                 }else {
                     $this->addFlash('erro', 'Falha ao editar, código do animal já existente!');
@@ -136,10 +143,10 @@ class AnimalController extends AbstractController
             $animal = $orm->getRepository(Animal::class)->find($id);
             $orm->getRepository(Animal::class)->remove($animal);
             $orm->flush();
-            $this->addFlash('successRemove',"Animal excluido com sucesso!");
+            $this->addFlash('success',"Animal excluido com sucesso!");
 
         }catch (\Exception $e){
-            $this->addFlash('erroRemove','Falha ao excluir o animal!');
+            $this->addFlash('erro','Falha ao excluir o animal!');
         }
         return $this->redirectToRoute("animal_adicionar");
     }
@@ -149,19 +156,19 @@ class AnimalController extends AbstractController
      */
     public function pageAbate(EntityManagerInterface $orm, Request $request, PaginatorInterface $paginator): Response
     {
-        $animais = array(Animal::class);
+        $animais = array();
 
         try{
             $animais = $orm->getRepository(Animal::class)->findAnimaisAbate();
 
-        }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao carregar os animais para o abate!');
-        }
-
-        foreach ($animais as $animal){
-            if($animal->getSituacao() == Situacao::getSituacao('Abatido')){
-                $animais->remove($animal);
+            foreach ($animais as $animal){
+                if($animal->getSituacao() == Situacao::getSituacao('Abatido')){
+                    $animais->remove($animal);
+                }
             }
+
+        }catch (\Exception $e){
+            $this->addFlash('erro','Falha ao carregar os animais para o abate!');
         }
 
         $animais = $paginator->paginate($animais,$request->query->getInt('page',1),8);
@@ -182,13 +189,13 @@ class AnimalController extends AbstractController
                 $animal->setSituacao(Situacao::getSituacao("Abatido"));
                 $orm->persist($animal);
                 $orm->flush();
-                $this->addFlash('successAbate',"Animal Abatido com sucesso!");
+                $this->addFlash('success',"Animal Abatido com sucesso!");
 
             }else{
-                $this->addFlash('erroAbate','Falha ao abater o animal!');
+                $this->addFlash('erro','Falha ao abater o animal!');
             }
         }catch (\Exception $e){
-            $this->addFlash('erroAbate','Falha ao abater o animal!');
+            $this->addFlash('erro','Falha ao abater o animal!');
         }
         return $this->redirectToRoute("animais_abate");
     }
@@ -202,7 +209,7 @@ class AnimalController extends AbstractController
         try{
             $animais = $orm->getRepository(Animal::class)->findAnimaisAbatidos();
         }catch (\Exception $e){
-            $this->addFlash('erroAbate','Falha ao listar animais abatidos!');
+            $this->addFlash('erro','Falha ao listar animais abatidos!');
         }
 
         $data['animais'] = $paginator->paginate($animais,$request->query->getInt('page',1),8);
@@ -216,7 +223,7 @@ class AnimalController extends AbstractController
         try{
             $quantidade = $entityManager->getRepository(Animal::class)->findProducaoLeite();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao calcular a produçao de leite!');
+            $this->addFlash('erro','Falha ao calcular a produçao de leite!');
         }
         return $quantidade;
     }
@@ -227,7 +234,7 @@ class AnimalController extends AbstractController
         try{
             $quantidade = $entityManager->getRepository(Animal::class)->findDemandaRacao();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao calcular a demanda de ração!');
+            $this->addFlash('erro','Falha ao calcular a demanda de ração!');
         }
         return $quantidade;
     }
@@ -239,7 +246,7 @@ class AnimalController extends AbstractController
         try{
             $quantidade = $orm->getRepository(Animal::class)->getTotal();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+            $this->addFlash('erro','Falha ao calcular  relatório 1!');
         }
         return $quantidade;
     }
