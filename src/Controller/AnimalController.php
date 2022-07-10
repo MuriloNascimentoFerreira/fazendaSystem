@@ -48,7 +48,6 @@ class AnimalController extends AbstractController
         $Situacao = new Situacao();
         $data['animais'] = array();
         $data['animais'] = $this->listar($orm);
-
         $data['animais'] = $paginator->paginate($data['animais'],$request->query->getInt('page',1),8);
 
         try{
@@ -89,7 +88,7 @@ class AnimalController extends AbstractController
         try{
             $animais = $entityManager->getRepository(Animal::class)->findAll();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+            $this->addFlash('erroEdit','Falha na listagem!');
         }
         return $animais;
     }
@@ -104,8 +103,7 @@ class AnimalController extends AbstractController
         $formulario->handleRequest($request);
         if($formulario->isSubmitted() && $formulario->isValid()){
 
-            if($animal->getSituacao() == 1) {
-
+            if($animal->getSituacao() == Situacao::getSituacao('Vivo')) {
                 if (!$orm->getRepository(Animal::class)->findCodigoEditar($animal)) {
                     try {
                         $orm->persist($animal);
@@ -114,7 +112,7 @@ class AnimalController extends AbstractController
                     } catch (\Exception $e) {
                         $this->addFlash('erroEdit', 'Falha ao Alterar o animal!');
                     }
-                } else {
+                }else {
                     $this->addFlash('erro', 'Falha ao editar, código do animal já existente!');
                 }
             }else{
@@ -160,6 +158,12 @@ class AnimalController extends AbstractController
             $this->addFlash('erroEdit','Falha ao carregar os animais para o abate!');
         }
 
+        foreach ($animais as $animal){
+            if($animal->getSituacao() == Situacao::getSituacao('Abatido')){
+                $animais->remove($animal);
+            }
+        }
+
         $animais = $paginator->paginate($animais,$request->query->getInt('page',1),8);
 
         $data['titulo'] = 'Lista de Gados para abate';
@@ -172,14 +176,17 @@ class AnimalController extends AbstractController
      */
     public function abater(int $id,EntityManagerInterface $orm): Response
     {
-        // fazer verificação antes de abater e validação do frontend
         try{
-            $animal = $orm->getRepository(Animal::class)->find($id);
-            $animal->setSituacao(Situacao::getSituacao("Abatido"));
-            $orm->persist($animal);
-            $orm->flush();
-            $this->addFlash('successAbate',"Animal Abatido com sucesso!");
+            if($orm->getRepository(Animal::class)->getAnimalPodeSerAbatido($id)){
+                $animal = $orm->getRepository(Animal::class)->find($id);
+                $animal->setSituacao(Situacao::getSituacao("Abatido"));
+                $orm->persist($animal);
+                $orm->flush();
+                $this->addFlash('successAbate',"Animal Abatido com sucesso!");
 
+            }else{
+                $this->addFlash('erroAbate','Falha ao abater o animal!');
+            }
         }catch (\Exception $e){
             $this->addFlash('erroAbate','Falha ao abater o animal!');
         }
@@ -195,7 +202,7 @@ class AnimalController extends AbstractController
         try{
             $animais = $orm->getRepository(Animal::class)->findAnimaisAbatidos();
         }catch (\Exception $e){
-            $this->addFlash('erroAbate','Falha ao Acessar o banco de dados!');
+            $this->addFlash('erroAbate','Falha ao listar animais abatidos!');
         }
 
         $data['animais'] = $paginator->paginate($animais,$request->query->getInt('page',1),8);
@@ -203,24 +210,24 @@ class AnimalController extends AbstractController
         return $this->render('animal/relatorios/abatidos.html.twig',$data);
     }
 
-    public function producaoLeite($entityManager):float
+    public function producaoLeite($entityManager)
     {
         $quantidade = 0.0;
         try{
-            $quantidade = $entityManager->getRepository(Animal::class)->findProducaoLeite()[1];
+            $quantidade = $entityManager->getRepository(Animal::class)->findProducaoLeite();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+            $this->addFlash('erroEdit','Falha ao calcular a produçao de leite!');
         }
         return $quantidade;
     }
 
-    public function demandaRacao($entityManager):float
+    public function demandaRacao($entityManager)
     {
         $quantidade = 0.0;
         try{
-            $quantidade = $entityManager->getRepository(Animal::class)->findDemandaRacao()[1];
+            $quantidade = $entityManager->getRepository(Animal::class)->findDemandaRacao();
         }catch (\Exception $e){
-            $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
+            $this->addFlash('erroEdit','Falha ao calcular a demanda de ração!');
         }
         return $quantidade;
     }
@@ -228,10 +235,9 @@ class AnimalController extends AbstractController
     //retorna o total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
     private function relatorio1($orm)
     {
-        $quantidade = 0;
+        $quantidade = 0.0;
         try{
             $quantidade = $orm->getRepository(Animal::class)->getTotal();
-            $quantidade = $quantidade[1];
         }catch (\Exception $e){
             $this->addFlash('erroEdit','Falha ao conectar com Banco de dados!');
         }

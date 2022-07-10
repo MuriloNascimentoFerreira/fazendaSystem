@@ -18,39 +18,38 @@
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                {% for animal in animais %}
-                    <tr>
-                        <th scope="row">{{ animal.codigo }}</th>
-                        <td class="text-center">{{ animal.leite }}</td>
-                        <td class="text-center">{{ animal.racao }}</td>
-                        <td class="text-center">{{ animal.peso }}</td>
-                        <td class="text-center">{{ animal.nascimento|date("d/m/Y") }}</td>
-                        <td class="text-center">{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
-                        <td class="text-center"> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
-                        <td class="text-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
-                    </tr>
+                    {% for animal in animais %}
+                        <tr>
+                            <th scope="row">{{ animal.codigo }}</th>
+                            <td class="text-center">{{ animal.leite }}</td>
+                            <td class="text-center">{{ animal.racao }}</td>
+                            <td class="text-center">{{ animal.peso }}</td>
+                            <td class="text-center">{{ animal.nascimento|date("d/m/Y") }}</td>
+                            <td class="text-center">{% if animal.situacao == 1%}Vivo{% else %}Abatido{% endif %}</td>
+                            <td class="text-center"> <a id="botao" class="btn btn-primary" href="{{ path('animal_editar',{id: animal.id}) }}">Editar</a> </td>
+                            <td class="text-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ animal.id }}">Excluir</button></td>
+                        </tr>
 
-                    <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
-                        <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Confirmar Exclusão</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Tem certeza que deseja excluir esse animal? #{{ animal.codigo }}</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary">Sim</button>
+                        <form action="{{ path('animal_excluir',{id: animal.id}) }}" method="POST">
+                            <div class="modal" tabindex="-1" id="confirmarExclusao{{ animal.id }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar Exclusão</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Tem certeza que deseja excluir esse animal? #{{ animal.codigo }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Sim</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                {% endfor %}
-
+                        </form>
+                    {% endfor %}
                 </tbody>
                 <tfoot>
                 </tfoot>
