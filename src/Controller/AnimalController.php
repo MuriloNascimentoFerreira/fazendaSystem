@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Animal;
 use App\Enumeration\Situacao;
 use App\Form\AnimalType;
+use App\Service\Relatorios;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\RepositoryFactory;
 use Knp\Component\Pager\PaginatorInterface;
@@ -24,7 +25,7 @@ class AnimalController extends AbstractController
     /**
      * @Route("/", name="home_page")
      */
-    public function index(EntityManagerInterface $orm): Response
+    public function index(EntityManagerInterface $orm, Relatorios $relatorios): Response
     {
         //total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
         $this->data['relatorio1'] = array();
@@ -32,9 +33,9 @@ class AnimalController extends AbstractController
         $this->data['producao_leite'] = array();
         $this->data['demanda_racao'] = array();
 
-        $this->data['relatorio1'] = $this->relatorio1($orm);
-        $this->data['producao_leite'] = $this->producaoLeite($orm);
-        $this->data['demanda_racao'] = $this->demandaRacao($orm);
+        $this->data['relatorio1'] = $relatorios->relatorio1($orm);
+        $this->data['producao_leite'] = $relatorios->producaoLeite($orm);
+        $this->data['demanda_racao'] = $relatorios->demandaRacao($orm);
 
         return $this->render('homePage.html.twig',$this->data);
     }
@@ -42,12 +43,12 @@ class AnimalController extends AbstractController
     /**
      * @Route("animal/adicionar", name="animal_adicionar")
      */
-    public function adicionar(Request $request,EntityManagerInterface $orm, PaginatorInterface $paginator) : Response
+    public function adicionar(Request $request,EntityManagerInterface $orm, PaginatorInterface $paginator, Relatorios $relatorios) : Response
     {
         $animal = new Animal();
         $Situacao = new Situacao();
         $data['animais'] = array();
-        $data['animais'] = $this->listar($orm);
+        $data['animais'] = $relatorios->listar($orm);
         $data['animais'] = $paginator->paginate($data['animais'],$request->query->getInt('page',1),8);
 
         try{
@@ -82,17 +83,6 @@ class AnimalController extends AbstractController
         $data['titulo'] = 'Adicionar Animal';
         $data['form'] = $form;
         return $this->renderForm('animal/adicionar.html.twig',$data);
-    }
-
-    public function listar($entityManager)
-    {
-        $animais = array();
-        try{
-            $animais = $entityManager->getRepository(Animal::class)->findAll();
-        }catch (\Exception $e){
-            $this->addFlash('erro','Falha na listagem!');
-        }
-        return $animais;
     }
 
     /**
@@ -217,37 +207,4 @@ class AnimalController extends AbstractController
         return $this->render('animal/relatorios/abatidos.html.twig',$data);
     }
 
-    public function producaoLeite($entityManager)
-    {
-        $quantidade = 0.0;
-        try{
-            $quantidade = $entityManager->getRepository(Animal::class)->findProducaoLeite();
-        }catch (\Exception $e){
-            $this->addFlash('erro','Falha ao calcular a produçao de leite!');
-        }
-        return $quantidade;
-    }
-
-    public function demandaRacao($entityManager)
-    {
-        $quantidade = 0.0;
-        try{
-            $quantidade = $entityManager->getRepository(Animal::class)->findDemandaRacao();
-        }catch (\Exception $e){
-            $this->addFlash('erro','Falha ao calcular a demanda de ração!');
-        }
-        return $quantidade;
-    }
-
-    //retorna o total de animais que tenham até um ano e cosumam mais de 500kg de ração por semana
-    private function relatorio1($orm)
-    {
-        $quantidade = 0.0;
-        try{
-            $quantidade = $orm->getRepository(Animal::class)->getTotal();
-        }catch (\Exception $e){
-            $this->addFlash('erro','Falha ao calcular  relatório 1!');
-        }
-        return $quantidade;
-    }
 }
