@@ -3,8 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Animal;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Relatorios
+class Relatorios extends AbstractController
 {
     public function listar($entityManager)
     {
