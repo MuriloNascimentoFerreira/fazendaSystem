@@ -24,16 +24,16 @@ services:
       PMA_ARBITRARY: 1
     ports:
       - "4000:80"
-  php7-2:
-    image: php:7.2-apache
-    container_name: php-container
+  app:
+    build: .
+    container_name: app-container
     restart: always
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www
     ports:
       - "8080:80"
 volumes:
   ###> doctrine/doctrine-bundle ###
   db-data:
-  html:
+  www:
 ###< doctrine/doctrine-bundle ###
