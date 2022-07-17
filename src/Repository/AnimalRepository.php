@@ -71,7 +71,6 @@ class AnimalRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
-
         if($a){
             return true;
         }else{
